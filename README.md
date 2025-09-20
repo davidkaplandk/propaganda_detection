@@ -16,7 +16,9 @@ This repository contains resources for prompting LLMs to detect propaganda in so
 
 **Prompting pipeline overview:**
 1. Extract a JSONL line with its prompt.  
-2. From the `{"messages": [{"role": "system", "content": <EXTRACT_THIS> ... }]}` field, extract the system prompt.  
+2. From the `{"messages": [ ...
+      "role": "user",
+      "content": <EXTRACT_THIS> ... }]}` field, extract the system prompt.  
 3. Replace the tweet text after `"Text:"` with `"Text: {text}"`.  
 4. Use this prompt to query the model.  
 
@@ -31,7 +33,8 @@ This repository contains resources for prompting LLMs to detect propaganda in so
   - **Main + High** → `*_high_and_main.jsonl` / `*_high_and_main_updated.jsonl`  
 
 **Example JSONL line:**
-```json
+
+<pre style="white-space: pre-wrap; word-break: break-word;">
 {
   "messages": [
     {
@@ -41,25 +44,27 @@ This repository contains resources for prompting LLMs to detect propaganda in so
     {
       "role": "user",
       "content": "You are an expert in propaganda analysis. Analyze the following text. 
-Always keep in mind that you are only looking for russian propaganda, not any other type of propaganda. Any other type of propaganda should be ignored and labeled as \"No Propaganda\".
+        Always keep in mind that you are only looking for russian propaganda, not any other type of propaganda. Any other            type of propaganda should be ignored and labeled as \"No Propaganda\".
 
-Text:
-\"@USER HTTPURL all you need to hear about Ukraine propaganda\"
+        Text:
+        \"@USER HTTPURL all you need to hear about Ukraine propaganda\"
 
-1. Identify the high-level category that best describes the text.
-
-High-level categories:
-1 — Patriotic & Catchy Appeals  
-2 — Popularity Appeals  
-3 — Deflections & Distractions  
-4 — Emotional & Loaded Persuasion  
-5 — Argument Manipulations  
-6 — No Propaganda  
-
-Now return the labels in JSON format:
-{\"high\": integer}
-
-Follow the format strictly. Return **one integer only**."
+        1. Identify the high-level category that best describes the text.
+        
+        High-level categories:
+        
+        1 — Patriotic & Catchy Appeals: Techniques like flag-waving or catchy slogans appealing to patriotism or identity.  
+        2 — Popularity Appeals: Techniques like bandwagon arguments, claiming something is good/true because it’s popular.  
+        3 — Deflections & Distractions: Includes whataboutism, repetition, causal oversimplification, or red herrings that               shift focus.  
+        4 — Emotional & Loaded Persuasion: Techniques using loaded language, fear, name-calling, exaggeration, Nazi                      comparisons, or appeals to authority.  
+        5 — Argument Manipulations: Techniques like straw man, clichés that shut down debate, doubt, or black-and-white                  framing.  
+        6 — No Propaganda: No relevant Russian propaganda detected.
+        
+        Now return the labels in a JSON format with the following structure:
+        {\"high\": integer}
+        
+        Follow the json format strictly. Do not add any additional text or explanations. Just use the integers for labeling,         no strings.
+        Remember to always return Integers only! Only return one integer that best describes the text. Never return multiple         integers or a list of integers!"
     },
     {
       "role": "assistant",
@@ -67,7 +72,7 @@ Follow the format strictly. Return **one integer only**."
     }
   ]
 }
-```
+</pre>
 
 
  ### `/golden_test_sets`
@@ -84,4 +89,6 @@ Follow the format strictly. Return **one integer only**."
 - Column/JSON key names can be adjusted in the first cell of the notebook.  
 - ⚠️ **Sanity check:**  
   - JSON file must have exactly 200 items.  
-  - Order must match the corresponding `.jsonl` / `.pkl` files (already aligned).  
+  - Order must match the corresponding `.jsonl` / `.pkl` files (already aligned).
+ 
+
